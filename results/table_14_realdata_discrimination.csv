@@ -1,0 +1,9 @@
+rate,window,n_target,n_standard,auc_cd_hat,auc_comp_A,auc_comp_B,auc_comp_C,auc_delta_mean,auc_delta_sd,auc_delta_rms
+native,baseline,213,871,0.502,0.52,0.504,0.501,0.501,0.514,0.504
+native,early_post,213,871,0.51,0.553,0.529,0.51,0.525,0.51,0.509
+native,mid_post,213,871,0.509,0.513,0.517,0.509,0.515,0.515,0.52
+native,late_post,213,871,0.55,0.521,0.542,0.55,0.522,0.517,0.506
+decim128,baseline,213,871,0.528,0.55,0.53,0.526,0.512,0.51,0.527
+decim128,early_post,213,871,0.54,0.534,0.531,0.537,0.53,0.524,0.508
+decim128,mid_post,213,871,0.504,0.518,0.527,0.501,0.5,0.527,0.5
+decim128,late_post,213,871,0.501,0.506,0.507,0.511,0.501,0.515,0.508

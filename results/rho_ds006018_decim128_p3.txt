@@ -1,0 +1,12 @@
+ds006018  subjects kept = 81  trials = 9648  (sfreq = 128 Hz, DO_ICA=False)
+P3b rho in [0,0.95]           : 0.912417  (FAIL ==1.0)
+finite-value rate             : 1.0000
+
+Per-window summary:
+    window  n_trials  median_rho  iqr_low  iqr_high  pct95  maximum  prewhiten_rate  pct_in_range
+  baseline      2412      0.4543   0.3363    0.5656 0.7353   0.9990          0.9473      0.995439
+early_post      2412      0.3710   0.2795    0.5171 0.7201   0.9990          0.8603      0.967662
+  mid_post      2412      0.1714  -0.0679    0.3419 0.4990   0.5838          0.4635      0.686567
+ late_post      2412      0.4966   0.4080    0.5781 0.6908   0.8909          0.9909      1.000000
+
+Skipped: [('044', 'too_few_8'), ('114', 'too_few_6'), ('122', 'too_few_9'), ('056', 'too_few_7'), ('069', 'too_few_9'), ('033', 'too_few_6'), ('059', 'too_few_0'), ('041', 'too_few_5'), ('079', 'too_few_6'), ('046', 'too_few_4'), ('120', 'too_few_4'), ('127', 'too_few_3'), ('037', 'too_few_7'), ('036', 'too_few_6'), ('038', 'too_few_5'), ('062', 'too_few_6'), ('065', 'too_few_3')]

@@ -1,0 +1,17 @@
+dataset,rate,window,n_trials,finite_value_rate
+ERP CORE,native,baseline,1084,1.0
+ERP CORE,native,early_post,1084,1.0
+ERP CORE,native,mid_post,1084,1.0
+ERP CORE,native,late_post,1084,1.0
+ERP CORE,decim128,baseline,1084,1.0
+ERP CORE,decim128,early_post,1084,1.0
+ERP CORE,decim128,mid_post,1084,1.0
+ERP CORE,decim128,late_post,1084,1.0
+ds006018,native,baseline,2398,1.0
+ds006018,native,early_post,2398,1.0
+ds006018,native,mid_post,2398,1.0
+ds006018,native,late_post,2398,1.0
+ds006018,decim128,baseline,2412,1.0
+ds006018,decim128,early_post,2412,1.0
+ds006018,decim128,mid_post,2412,1.0
+ds006018,decim128,late_post,2412,1.0

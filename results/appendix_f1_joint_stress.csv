@@ -1,0 +1,10 @@
+rho,student_t_df,iid_branch_fpr_pct,prewhiten_branch_fpr_pct
+0.0,inf (Gaussian),6.8,6.6
+0.0,7,39.5,39.6
+0.0,4,88.8,88.8
+0.2,inf (Gaussian),26.6,7.2
+0.2,7,63.5,40.0
+0.2,4,95.0,88.7
+0.55,inf (Gaussian),95.2,10.3
+0.55,7,98.7,43.9
+0.55,4,100.0,89.5

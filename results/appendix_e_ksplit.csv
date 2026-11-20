@@ -1,0 +1,4 @@
+family,k_1_auc,k_2_auc,k_3_auc,k_4_auc
+V-shaped variance,0.548,1.0,0.919,1.0
+Step-mean change,0.998,0.92,0.919,0.734
+Oscillatory variance,0.79,0.598,0.722,0.922

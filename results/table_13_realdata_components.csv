@@ -1,0 +1,17 @@
+dataset,rate,window,median_abs_A,median_abs_B,median_C,median_cd_hat
+ERP CORE,native,baseline,0.7,13.724,679.986,690.228
+ERP CORE,native,early_post,0.639,9.843,1287.974,1290.28
+ERP CORE,native,mid_post,0.667,6.209,1130.038,1131.579
+ERP CORE,native,late_post,0.711,11.654,194.914,206.121
+ERP CORE,decim128,baseline,0.452,0.493,0.318,0.043
+ERP CORE,decim128,early_post,0.493,0.538,0.868,0.19
+ERP CORE,decim128,mid_post,0.652,0.565,1.543,-0.371
+ERP CORE,decim128,late_post,0.379,0.805,0.425,0.274
+ds006018,native,baseline,0.642,4.786,186.341,187.297
+ds006018,native,early_post,0.649,3.279,133.989,133.958
+ds006018,native,mid_post,0.624,1.745,81.217,81.001
+ds006018,native,late_post,0.65,7.733,199.022,203.247
+ds006018,decim128,baseline,0.417,0.561,0.272,0.013
+ds006018,decim128,early_post,0.531,0.72,0.786,0.223
+ds006018,decim128,mid_post,0.601,0.825,2.694,2.866
+ds006018,decim128,late_post,0.396,0.771,0.462,0.288

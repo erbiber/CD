@@ -1,0 +1,17 @@
+dataset,rate,window,subwin_len_m,closed_form_bias_b,n_steps_median
+ERP CORE,native,baseline,12,0.212963,15
+ERP CORE,native,early_post,9,0.314815,15
+ERP CORE,native,mid_post,8,0.375,11
+ERP CORE,native,late_post,19,0.121711,15
+ERP CORE,decim128,baseline,8,0.375,2
+ERP CORE,decim128,early_post,6,0.611111,2
+ERP CORE,decim128,mid_post,4,1.75,2
+ERP CORE,decim128,late_post,9,0.314815,3
+ds006018,native,baseline,8,0.375,11
+ds006018,native,early_post,8,0.375,8
+ds006018,native,mid_post,8,0.375,5
+ds006018,native,late_post,9,0.314815,15
+ds006018,decim128,baseline,8,0.375,2
+ds006018,decim128,early_post,6,0.611111,2
+ds006018,decim128,mid_post,4,1.75,2
+ds006018,decim128,late_post,9,0.314815,3
