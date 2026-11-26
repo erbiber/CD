@@ -1,207 +1,198 @@
 # Cumulative Divergence (CD): reproducibility package
 
 Repository: https://github.com/erbiber/CD  
-Pre-registration: https://doi.org/10.17605/OSF.IO/HEAXQ
+Pre-registration: https://doi.org/10.17605/OSF.IO/HEAXQ (`preregistration.pdf`)
 
-Code, figures, and result tables for the cumulative-divergence (CD) estimator and its
-validation. CD measures cumulative within-window distributional change in a single-trial
-signal: a window is split into k+1 consecutive sub-windows, the per-step Gaussian
-Kullback–Leibler divergence between consecutive sub-windows is summed across steps, and a
-closed-form small-sample bias floor b(m) = (2m−1)/(m(m−3)) is subtracted at each step.
-Each per-step term decomposes exactly into an entropy/variance-contraction term (A), a
-variance-trajectory term (B), and a mean-shift term (C).
+Code, results and figures for the cumulative-divergence (CD) estimator, its validation by
+simulation, its benchmark against classical within-window statistics, and its application to
+two public visual-oddball EEG datasets. CD splits a window into k+1 consecutive sub-windows,
+sums the per-step Gaussian Kullback–Leibler divergence between neighbouring sub-windows, and
+subtracts the closed-form null floor b(m) = (2m−1)/(m(m−3)) at each step. Each per-step term
+splits exactly into an entropy-reduction term (A), a variance-shrinkage term (B) and a
+mean-shift term (C). An exactly unbiased per-step estimator (Equation 6 of the paper) is
+computed from the same component sums.
 
 ## Folder layout
 
 - `scripts/`  — analysis code (plain Python, no comments or docstrings)
-- `results/` — CSV/text outputs consumed by the manuscript tables and figures
+- `results/`  — every CSV behind the tables and figures of the paper
+- `figures/`  — Figures 1–6 as used in the paper
+- `preregistration.pdf`, `requirements.txt`, `environment.yml`
 
+## Where each table and figure comes from
+
+| Paper | File(s) in `results/` | Script |
+|---|---|---|
+| Table 1 (notation), Table 2 (configurations) | — | — |
+| Table 3, Figure 2 | `table_2_bias_floor.csv` | `simulation.py` |
+| Table 4, Figure 3 | `table_3_ar1_sweep.csv` | `simulation.py` |
+| Table 5, Figure 4 | `table_4_kurtosis.csv` | `simulation.py` |
+| Table 6 | `table_5_perm_power.csv` | `simulation.py` |
+| Table 7 | `table_6_fpr_control.csv` | `simulation.py` |
+| Table 8 | `table_u1_step_bias.csv` | `unbiased_cd.py` |
+| Table 9 | `table_u2_path_window_length.csv` | `unbiased_cd.py` |
+| Table 10, Figure 5 | `table_7_benchmark.csv` | `simulation.py` |
+| Table 11 | `table_8_components_standalone.csv` | `table_7bc_components.py` |
+| Table 12 | `table_9_components_incremental.csv` | `table_7bc_components.py` |
+| Table 13 | `table_7x_classical_comparators.csv` | `comparators.py` |
+| Table 14 | `table_7y_order_sensitivity.csv` | `comparators.py` |
+| Table 15 | `table_7z_weak_effects.csv` | `comparators.py` |
+| Table 16 | `cd_realdata_erpcore_noica_prereg.csv` | `realdata_cd.py` |
+| Table 17, Figure 6 | `cd_realdata_<dataset>_rho.csv`, `cd_realdata_<dataset>_bias.csv` | `realdata_cd.py`; figure by `make_figure6.py` |
+| Table 18 | `cd_realdata_<dataset>_auc_subject.csv`, `_auc_subject_explore.csv`, `_unbiased_auc_subject.csv` | `realdata_cd.py`, `realdata_post.py` |
+| Table 19 | `incremental_<dataset>_mastoid.csv` | `realdata_incremental.py` |
+| Table 20 | `cd_realdata_<dataset>_unbiased_summary.csv` | `realdata_post.py` |
+| Table 21 (guide) | — | — |
+| Table A1 | `appendix_a5_variance.csv` | `appendix_tables.py` |
+| Table C1 | `appendix_c2_bartlett.csv` | `appendix_tables.py` |
+| Table C2 | `appendix_c3_prewhiten_acf.csv` | `appendix_tables.py` |
+| Table C3 | `appendix_c4_rho_bias.csv` | `supplementary_analyses.py` |
+| Table E1 | `appendix_e_ksplit.csv` | `appendix_tables.py` |
+| Table F1 | `appendix_f1_joint_stress.csv` | `supplementary_analyses.py` |
+| Table F2 | `appendix_f2_effect_size.csv` | `effect_size_sweep.py` |
+| Table G1 | `table_u3_null.csv` | `unbiased_cd.py` |
+| Table G2 | `table_u4_ar_prewhitened.csv` | `unbiased_cd.py` |
+| Table H1 | `appendix_g_sector_floors.csv` | `comparators.py` |
+| Table H2 | `appendix_g_parity_orders.csv` | `comparators.py` |
+| Table H3 | `appendix_g_parity_by_family.csv` | `comparators.py` |
+| Figure 1 | — (schematic) | `figures.py` |
+
+The CSV names keep the numbering of the simulation scripts, so `table_2_bias_floor.csv` is
+Table 3 of the paper; the table above is the reference.
+
+Further outputs cited in the text:
+- `table_2_bias_floor_with_se.csv` — an independent replication of Table 3 on a separate
+  random stream, with standard errors (`supplementary_analyses.py`).
+- `table_9x_incremental_over_classical.csv` — CD and its components added to the classical
+  statistics on the benchmark families (`comparators.py`).
+- `appendix_e2_k_dependence.csv` — dependence of the floor-debiased CD on the number of
+  transitions k for a unit mean ramp over 2,142 samples (§6.5; `k_dependence.py`).
+- `appendix_u5_fisher_action.csv` — written by `unbiased_cd.py`; not reported in the paper.
+
+Real-data dataset names: `erpcore` (ERP CORE, with ICA), `erpcore_noica` (ERP CORE, without
+ICA) and `ds006018` (OpenNeuro ds006018, with ICA).
 
 ## Scripts
 
-- `simulation.py`            — synthetic validation: bias floor, AR(1) sweep, kurtosis
-                               stress, false-positive control, eight-family benchmark
-                               (Tables 2–7).
-- `table_7bc_components.py`  — per-component A/B/C standalone and incremental AUC on the
-                               benchmark families (Tables 8 and 9).
-- `appendix_tables.py`       — Appendix A.5 (bias-floor Monte-Carlo variance), C.2 (Bartlett
-                               effective-n accuracy), C.3 (pre-whitening residual ACF), and
-                               E (k-split exploratory AUC sweep). Reuses the canonical CD
-                               core from `simulation.py` verbatim.
-- `supplementary_analyses.py`— SE-augmented Table 2, Appendix C.4 (lag-1 autocorrelation
-                               finite-sample bias), and Appendix F.1 (joint AR(1)×kurtosis
-                               false-positive stress). Reproduces one value each of Tables 2 and 3 as a
-                               self-consistency check before writing new output.
-- `effect_size_sweep.py`     — Appendix F.2 effect-size sensitivity sweep (mean-ramp and
-                               V-shaped-variance families).
-- `k_dependence.py`          — dependence of debiased CD on the number of transitions k for a
-                               unit mean ramp over 2,142 samples (§6.5, limitation xi).
-- `figures.py`               — Figures 1–5 (pipeline schematic, bias floor, AR(1) sweep,
-                               kurtosis, benchmark).
-- `rho_envelope_erpcore.py`  — real-data pipeline for ERP CORE P3 (active visual oddball).
-- `rho_envelope_ds006018.py` — real-data pipeline for OpenNeuro ds006018.
-- `realdata_analysis.py`     — autocorrelation boundary (Table 10), component magnitudes
-                               (Table 13), and Target-vs-Standard discrimination (Table 14,
-                               ERP CORE only) from the per-trial CSVs.
-- `make_figure6.py`          — Figure 6 (real-data autocorrelation: native vs decimated).
-- `realdata_cd.py`           — real-data CD, self-contained. For each recording: 0.1–30 Hz FIR
-                               band-pass; ICA (20 components, FastICA, seed 42, fitted on a 1 Hz
-                               high-passed copy; components matching the EOG channels removed);
-                               event codes read from the trailing digits of each annotation;
-                               one trial set per participant, rejected on the largest
-                               peak-to-peak (default 100 µV) over −200 to 800 ms across all
-                               scalp channels under each of the as-recorded, Cz, linked-mastoid
-                               and average references; baseline −200 to 0 ms.
-                               Fz under the as-recorded reference, Cz (ERP CORE only), linked
-                               mastoids, the scalp average and the surface Laplacian (CSD), at
-                               the native rate and at 128 Hz. Writes per trial the realised m,
-                               n_eff and k, the bias subtracted and the closed-form k·b(n_eff),
-                               and flags windows with m < 8. As a positive control it also
-                               writes the conventional mean amplitude of the baseline-corrected,
-                               undifferenced epoch at Fz and Pz in each window (`amp_fz`,
-                               `amp_pz`; µV, or µV/m² for the surface Laplacian).
+- `simulation.py` — canonical simulation pipeline: bias floor, AR(1) sweep, kurtosis stress,
+  empirical-null power, false-positive control and the eight-family benchmark (Tables 3–7
+  and 10). Holds the CD core shared by all simulation scripts.
+- `unbiased_cd.py` — the exactly unbiased estimator of §2.10: per-step bias, path bias, null
+  and pre-whitened AR(1) checks (Tables 8, 9, G1, G2).
+- `table_7bc_components.py` — standalone and incremental AUC of the components A, B and C
+  on the benchmark families (Tables 11 and 12).
+- `comparators.py` — classical within-window statistics (ANOVA F, Bartlett, likelihood
+  ratio, von Neumann ratios, slopes) on the benchmark trials, order sensitivity and weak
+  effects (Tables 13–15), and the sector floors and parity parts of Appendix H.
+- `appendix_tables.py` — Appendices A.5, C.2, C.3 and E (Tables A1, C1, C2, E1).
+- `supplementary_analyses.py` — the replication of Table 3 with standard errors, Appendix C.4
+  and Appendix F.1 (Tables C3, F1). It first reproduces two values of Tables 3 and 4 as a
+  self-consistency check.
+- `effect_size_sweep.py` — Appendix F.2 (Table F2).
+- `k_dependence.py` — step-count dependence (§6.5).
+- `figures.py` — Figures 1–5.
+- `realdata_cd.py` — real-data pipeline for both datasets (see below).
+- `realdata_post.py` — unbiased CD from the per-trial component sums written by
+  `realdata_cd.py` (Tables 18 and 20).
+- `realdata_incremental.py` — incremental test of CD over the classical statistics on real
+  data (Table 19).
+- `make_figure6.py` — Figure 6 from `cd_realdata_<dataset>_rho.csv`.
+- `run_realdata_cd.bat` — runs `realdata_cd.py` for both datasets in parts on Windows.
 
-### Running `realdata_cd.py`
+The simulation and appendix scripts write to the folder they are run from, and `figures.py`
+reads its CSVs from there; run each from inside the folder holding its inputs.
 
-Place `realdata_cd.py` in `<root>/scripts/<any folder>/`. Without arguments it reads
-`<root>/data/erp_core_P3` (ERP CORE, BIDS layout) and `<root>/data_ds006018/ds006018`
-(ds006018, BIDS layout, task `visualoddball`) and writes to `<root>/results/P300`:
+## Running the real-data pipeline
+
+`realdata_cd.py` reads raw BIDS data. For each recording it applies a 0.1–30 Hz FIR band-pass;
+ICA (20 components, FastICA, seed 42, fitted on a 1 Hz high-passed copy; components matching
+the EOG channels removed); event codes read from the trailing digits of each annotation; one
+trial set per participant, rejected when the peak-to-peak amplitude from −200 to 800 ms
+exceeds 100 µV in any scalp channel under any of the four voltage derivations; and a −200 to
+0 ms baseline. Fz is analysed under the reference as recorded, Cz (ERP CORE only), the mean of
+the two mastoid electrodes, the scalp average and the surface Laplacian (CSD), at the native
+rate and after decimation of each extracted window to 128 Hz. As a positive control it also
+writes the mean amplitude of the baseline-corrected, undifferenced epoch at Fz and Pz
+(`amp_fz`, `amp_pz`; µV, or µV/m² for the surface Laplacian).
+
+Without arguments the script reads `<root>/data/erp_core_P3` (ERP CORE) and
+`<root>/data_ds006018/ds006018` (task `visualoddball`), where `<root>` is two folders above the
+script, and writes to `<root>/results/P300`. `--erpcore`, `--ds006018`, `--ds006018-subdir`
+and `--out` override these folders. To write into this repository's `results/` folder:
 
 ```
-python realdata_cd.py --dataset erpcore --jobs 8
-python realdata_cd.py --dataset ds006018 --jobs 8
+python scripts/realdata_cd.py --dataset erpcore --erpcore <ERP CORE folder> --out results --jobs 1
+python scripts/realdata_cd.py --dataset ds006018 --ds006018 <ds006018 folder> --out results --jobs 1
+python scripts/realdata_cd.py --dataset erpcore --erpcore <ERP CORE folder> --out results --jobs 1 --no-ica
 ```
 
 Each job holds one recording with its ICA and surface Laplacian in memory (about 1.5 GB for
-ERP CORE). On a machine with limited memory, run the participants in parts, one job at a
-time; each part is a separate process, so memory is released between parts:
+ERP CORE). With limited memory, run the participants in parts (`--part K/N`); each part is
+stored in the cache without writing output files, and a final run without `--part` writes
+them. `run_realdata_cd.bat` does this for both datasets, with and without ICA. If a
+participant fails, no output files are written and the failed participants are listed;
+running the same command again recomputes only them. `--summary-only` rebuilds the summary
+files from the per-trial files. Per-participant results are cached in `<out>/cache`.
+
+Outputs, each named `cd_realdata_<dataset>`: per-trial files `_pertrial_<derivation>.csv.gz`
+(full precision), `_subjects.csv`, `_rho.csv`, `_bias.csv`, `_finite.csv`, `_auc.csv`,
+`_auc_subject.csv`, `_auc_subject_explore.csv` and `_prereg.csv`.
+
+The two post-processing scripts read the per-trial files:
 
 ```
-python realdata_cd.py --dataset erpcore --part 1/8 --jobs 1
-...
-python realdata_cd.py --dataset erpcore --part 8/8 --jobs 1
-python realdata_cd.py --dataset erpcore --jobs 1
+python scripts/realdata_post.py --dataset erpcore --out results
+python scripts/realdata_post.py --dataset ds006018 --out results
+python scripts/realdata_post.py --dataset erpcore --no-ica --out results
+python scripts/realdata_incremental.py results/cd_realdata_erpcore_pertrial_mastoid.csv.gz mastoid results/incremental_erpcore_mastoid.csv
+python scripts/realdata_incremental.py results/cd_realdata_erpcore_noica_pertrial_mastoid.csv.gz mastoid results/incremental_erpcore_noica_mastoid.csv
+python scripts/realdata_incremental.py results/cd_realdata_ds006018_pertrial_mastoid.csv.gz mastoid results/incremental_ds006018_mastoid.csv
+python scripts/make_figure6.py results
 ```
 
-With `--no-ica` every output name carries `_noica` (for example `cd_realdata_erpcore_noica_rho.csv`),
-so the runs with and without ICA can share one output folder and cache.
-`--part K/N` processes the K-th of N consecutive groups of participants and stores them in the
-cache without writing output files; the final run without `--part` reads the cache, computes
-any participant still missing and writes the output files. `scripts/run_realdata_cd.bat` runs
-both datasets this way on Windows, first with ICA and then without. If any participant fails (for example, memory exhausted),
-no output files are written and the failed participants are listed; running the same command
-again recomputes only them.
+`make_figure6.py` writes `figure_6_rho_distributions.png` to the `figures/` folder next to the
+results folder it reads.
 
-`--erpcore`, `--ds006018`, `--ds006018-subdir` and `--out` override the folders; `--refs`,
-`--reject`, `--no-ica`, `--ica-n` and `--subjects` change the analysis; `--summary-only`
-rebuilds the summary files from the per-trial files. Every output name starts with
-`cd_realdata_<dataset>`: per-trial files `_pertrial_<derivation>.csv.gz` (one per derivation,
-written at full precision), `_subjects.csv` (inclusion and trial counts), `_rho.csv`
-(autocorrelation per window), `_bias.csv` (realised m, n_eff, k and the bias check),
-`_finite.csv` (finite-value rate), `_auc.csv` (target versus standard Mann–Whitney AUC pooled
-over trials, all windows and windows with m ≥ 8) and `_auc_subject.csv` (AUC within each
-participant with at least 5 trials per class, Wilcoxon signed-rank test of the participant AUCs
-against 0.5, Holm correction over all rows of a dataset). Per-participant results are cached in `<out>/cache` as
-`cd_realdata_*.pkl`; delete them to recompute. A run restricted with `--subjects` adds the
-participant list to the output names.
+## Estimator configurations (paper Table 2)
 
-Run any script from inside the folder holding its inputs. The two real-data pipelines read
-raw data from the local paths set at the top of each file (`DATA_ROOT` / `CACHE_DIR`) and
-write `*_pertrial.csv`, `*_summary.csv`, and `*_p3.txt`. `realdata_analysis.py` and
-`make_figure6.py` read the per-trial CSVs in `results/`.
+- Simulations (§3–4): k = 20 transitions (21 non-overlapping sub-windows), m = 102 samples
+  per sub-window (`DEFAULT_K = 20`, `DEFAULT_M = 102` in `simulation.py`).
+- Real data (§5): adaptive rule of Equation (2). k = 15 by default, reduced per window to
+  k_eff so that each sub-window keeps m = floor(n/(k_eff+1)) ≥ 8 samples
+  (`MIN_WIN_SAMPLES = 8`). Realised k_eff at the native rate: ERP CORE 15, 15, 11, 15;
+  ds006018 11, 8, 5, 15 (baseline to late; paper Table 17).
+- Sampling rate: ERP CORE 1024 Hz, ds006018 500 Hz; optional decimation of each extracted
+  window to 128 Hz after epoching, never of the continuous recording.
+- AR(1) pre-whitening: applied when the median per-sub-window lag-1 autocorrelation exceeds
+  0.20 (`RHO_THRESHOLD = 0.20`).
+- Shared: `RNG_SEED = 20260519`, the per-step closed-form floor b(m) and per-step debiasing.
 
-## Estimator configurations (matches manuscript Table 1a)
+The forward real-data estimator normalises each trial's differenced segment to unit standard
+deviation; the components are scale-invariant, and `realdata_cd.py` checks this at the start
+of every run.
 
-Every configuration used in the paper, in one place:
+## Main results
 
-- Simulations (§3–4): fixed high-resolution setting, k = 20 transitions (21
-  non-overlapping sub-windows), m = 102 samples per sub-window. Chosen to isolate
-  estimator behaviour from sub-window-length artefacts. `DEFAULT_K = 20`,
-  `DEFAULT_M = 102` in `simulation.py`.
-- Real data (§5): adaptive rule of Equation (2). k = 15 default (`N_STEPS_FIXED = 15`),
-  reduced per window to k_eff so that each sub-window keeps m = floor(n/(k_eff+1)) ≥ 8
-  samples (`MIN_WIN_SAMPLES = 8`). Realised per-window k_eff: ERP CORE 15,15,11,15;
-  ds006018 11,8,5,15 (baseline → late; see Table 11).
-- Sampling rate: ERP CORE 1024 Hz, ds006018 500 Hz (native). Optional decimation to
-  128 Hz (`DECIM_SFREQ = 128.0`), applied to each analysis window after epoching.
-- AR(1) pre-whitening: adaptive, triggered when the median per-sub-window lag-1
-  autocorrelation exceeds 0.20 (`RHO_THRESHOLD = 0.20`).
-- Two-split special case (k = 1): available; a larger m is recommended so the per-step
-  bias floor, which then equals the trial-level floor, stays small relative to signal.
-- Shared across all configurations: `RNG_SEED = 20260519`, the per-step closed-form bias
-  floor b(m) = (2m−1)/(m(m−3)), and per-step debiasing.
-
-## Scale-invariance and sampling rate (important)
-
-`compute_cd` normalises each trial's differenced signal to unit standard deviation before
-estimation. CD's components are scale-invariant by construction; the normalisation lifts
-small-amplitude inputs (e.g. EEG in volts, ~1e-6) off the absolute 1e-12 numerical floors
-that would otherwise clamp the variance and bias the autocorrelation. Both real-data scripts
-embed `_self_test_scale_invariance()` (run at the start of `main()`, or via
-`python <script>.py --self-test`), which asserts that a signal and its 1e-6-scaled copy
-yield identical rho, A, B, C, and CD.
-
-Sampling rate is controlled by `DECIM_SFREQ` at the top of each real-data script:
-- `DECIM_SFREQ = None`  → native rate (1024 Hz ERP CORE / 500 Hz ds006018); outputs untagged.
-- `DECIM_SFREQ = 128.0` → analysis windows decimated to 128 Hz; outputs tagged `_decim128`.
-Decimation is applied to each extracted analysis window after epoching at the native rate,
-never to the continuous recording (raw-level resampling would jitter event timing).
-
-## Real-data result summary
-
-On single-trial first-differenced Fz from two independent acquisitions:
-- At native rate the differenced-signal lag-1 autocorrelation is high (median rho ≈ 0.86–0.97),
-  above the estimator's reliable AR(1) range; first-differencing does not whiten oversampled
-  band-limited EEG.
-- The pre-registered Target-vs-Standard discrimination is at chance (AUC ≈ 0.50–0.55) for CD,
-  for each component, and for the endpoint summaries, across all windows.
-- Decimation to 128 Hz returns the long windows (baseline, late) to the reliable range and
-  collapses the components to O(1), but the short windows become under-sampled and the
-  discrimination null persists — so the null is not an artifact of the autocorrelation regime.
+- In simulation the closed-form floor matched the plug-in mean within 1.4 % for sub-windows
+  of 13–1,000 samples; the unbiased estimator showed no detectable bias, whereas floor
+  subtraction overstated a smooth path divergence; AR(1) pre-whitening kept null means within
+  ±0.5 up to ρ = 0.95; heavy tails inflated false positives.
+- Classical statistics on the same sub-windows detected every simulated change at least as
+  well as CD, and CD added essentially no information to them.
+- On ERP CORE and ds006018 the pre-registered checks of finite values and floor arithmetic
+  held, but single-trial autocorrelation exceeded the characterised range. Neither CD nor the
+  classical statistics separated targets from standards (|AUC − 0.5| ≤ 0.084), whereas a Pz
+  amplitude control did (AUC 0.63–0.66).
 
 ## Datasets
 
-- ERP CORE P3 (active visual oddball; 1024 Hz). Read locally via MNE.
-- OpenNeuro ds006018 (Isbell et al. 2025; 500 Hz; target and standard trials), via OpenNeuro.
+- ERP CORE P3 (Kappenman et al., 2021; active visual oddball; 1024 Hz).
+- OpenNeuro ds006018 (Isbell et al., 2025; active visual oddball; 500 Hz).
 
-## Result files (`results/`)
+## Reproducibility
 
-Simulation tables (from `simulation.py`):
-- `table_2_bias_floor.csv`         — Table 2, closed-form vs empirical bias floor.
-- `table_2_bias_floor_with_se.csv` — SE-augmented Table 2 (from `supplementary_analyses.py`).
-- `table_3_ar1_sweep.csv`          — Table 3, AR(1) correction-strategy sweep.
-- `table_4_kurtosis.csv`           — Table 4, Student-t kurtosis stress.
-- `table_5_perm_power.csv`         — Table 5, empirical-null detection power (α = 0.05;
-                                     empirical-null threshold ≈ 0.196).
-- `table_6_fpr_control.csv`        — Table 6, false-positive control by branch.
-- `table_7_benchmark.csv`          — Table 7, eight-family CD-vs-endpoint AUC benchmark.
-
-Component tables (from `table_7bc_components.py`):
-- `table_8_components_standalone.csv`   — Table 8, standalone A/B/C AUC.
-- `table_9_components_incremental.csv`  — Table 9, incremental (endpoints+ABC) AUC.
-
-Real-data tables (from `rho_envelope_*.py` and `realdata_analysis.py`):
-- `rho_erpcore_native_pertrial.csv`, `rho_erpcore_decim128_pertrial.csv`,
-  `rho_erpcore_decim128_summary.csv`, `rho_erpcore_decim128_p3.txt`  — ERP CORE per-trial/summary.
-- `rho_ds006018_native_pertrial.csv`, `rho_ds006018_decim128_pertrial.csv`,
-  `rho_ds006018_decim128_summary.csv`, `rho_ds006018_decim128_p3.txt` — ds006018 per-trial/summary.
-- `table_10_realdata_rho_boundary.csv`  — Table 10, per-window autocorrelation boundary (both datasets).
-- `table_11_realdata_biasfloor.csv`     — Table 11, per-step bias-floor precision (ERP CORE).
-- `table_12_realdata_finitevalue.csv`   — Table 12, finite-value rate (ERP CORE).
-- `table_13_realdata_components.csv`     — Table 13, per-window A/B/C magnitudes (both datasets).
-- `table_14_realdata_discrimination.csv` — Table 14, Target-vs-Standard discrimination (ERP CORE only).
-
-Appendix tables (from `appendix_tables.py`, `supplementary_analyses.py`, `effect_size_sweep.py`):
-- `appendix_a5_variance.csv`      — Appendix A.5, bias-floor Monte-Carlo variance.
-- `appendix_c2_bartlett.csv`      — Appendix C.2, Bartlett effective-n accuracy.
-- `appendix_c3_prewhiten_acf.csv` — Appendix C.3, pre-whitening residual autocorrelation.
-- `appendix_c4_rho_bias.csv`      — Appendix C.4, lag-1 autocorrelation finite-sample bias.
-- `appendix_e_ksplit.csv`         — Appendix E, k-split exploratory AUC.
-- `appendix_f1_joint_stress.csv`  — Appendix F.1, joint AR(1)×kurtosis false-positive rates.
-- `appendix_f2_effect_size.csv`   — Appendix F.2, effect-size sensitivity sweep.
-- `appendix_e2_k_dependence.csv`  — step-count dependence of debiased CD (from `k_dependence.py`).
-
-All simulation, appendix, and component CSVs regenerate byte for byte from the fixed seed
-(`RNG_SEED = 20260519`) in `simulation.py`, independent of `PYTHONHASHSEED` (each Table 5
-family is seeded with a CRC-32 of its name). Verified with numpy 2.5.3, pandas 3.0.5,
-scipy 1.18.1 and scikit-learn 1.9.1.
+All simulation, appendix and component CSVs regenerate byte for byte from the fixed seed
+(`RNG_SEED = 20260519`), independent of `PYTHONHASHSEED` (each Table 6 family is seeded with a
+CRC-32 of its name). `realdata_post.py`, `realdata_incremental.py` and `make_figure6.py`
+reproduce their outputs byte for byte from the per-trial files in `results/`. Verified with
+numpy 2.5.3, pandas 3.0.5, scipy 1.18.1, scikit-learn 1.9.1 and matplotlib 3.11.2.
