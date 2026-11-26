@@ -1,0 +1,9 @@
+family,description,auc_endpoints_anova_bartlett_vn,auc_plus_ABC_CD,delta_mean,delta_ci_lo,delta_ci_hi,n_trials_per_class
+null_ar085,"AR(1) rho=0.85, no change",1.0,1.0,0.0,0.0,0.0,600
+null_t4,"Student-t df=4, no change",0.9944958333333334,0.9950763888888888,0.0005805555555555564,0.0002968750000000159,0.000871874999999969,600
+mean_ramp,Mean ramp 0 -> +1.0,1.0,1.0,0.0,0.0,0.0,600
+var_ramp,Variance ramp sigma 1.0 -> 1.8,1.0,1.0,0.0,0.0,0.0,600
+v_variance,V-shaped variance,1.0,1.0,0.0,0.0,0.0,600
+step_mean,Mid-trial step +0.7,1.0,1.0,0.0,0.0,0.0,600
+oscillatory,Oscillatory variance,1.0,1.0,0.0,0.0,0.0,600
+mixed,Mean ramp + variance ramp,1.0,1.0,0.0,0.0,0.0,600
