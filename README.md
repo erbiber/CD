@@ -19,6 +19,15 @@ computed from the same component sums.
 - `figures/`  — Figures 1–6 as used in the paper
 - `preregistration.pdf`, `requirements.txt`, `environment.yml`
 
+### Per-trial files (GitHub release)
+
+The 17 per-trial real-data files (`cd_realdata_<dataset>_pertrial_<derivation>.csv.gz` and
+`cd_realdata_<dataset>_unbiased_pertrial.csv.gz`, 315 MB in total) are attached to the
+release of this repository (https://github.com/erbiber/CD/releases) because single files above
+25 MB cannot be added to the repository through the browser. Download them into `results/`
+before running `realdata_post.py`, `realdata_incremental.py` or `realdata_cd.py --summary-only`.
+All summary files, tables and figures are in the repository itself.
+
 ## Where each table and figure comes from
 
 | Paper | File(s) in `results/` | Script |
